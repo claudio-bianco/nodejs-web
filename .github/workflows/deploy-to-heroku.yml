@@ -1,0 +1,32 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main  # or 'master' depending on your branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build (if needed)
+        run: echo "No build step needed for HTML/CSS app"
+
+      - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          git remote add heroku https://heroku:${HEROKU_API_KEY}@git.heroku.com/nodejs-web.git
+          git push heroku HEAD:main --force
